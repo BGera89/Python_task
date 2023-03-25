@@ -85,17 +85,14 @@ optional arguments:
   -c C, --C C           Regularization parameter The strength of the regularization is inversely proportional to C. Must be strictly positive. The penalty is   
                         a squared l2 penalty. Default is 1.0
   -e EPSILON, --epsilon EPSILON
-                        Epsilon in the epsilon-SVR model. It specifies the epsilon-tube within which no penalty is associated in the training loss function     
-                        with points predicted within a distance epsilon from the actual value. Must be non-negative Default is 0.1.
+                        - SVR model epszilon értéke. Nem negatív szám. Default = 0.1.
   -sh SHRINKING, --shrinking SHRINKING
-                        Whether to use the shrinking heuristic. See the User Guide. Default is True
+                        - csökkenő heurisztika alkalmazása. Default = True
   -cs CACHE_SIZE, --cache_size CACHE_SIZE
-                        Specify the size of the kernel cache (in MB). Default is 200.0
+                        - A kernel cache mérete mb-ban. Default = 200.0
   -v VERBOSE, --verbose VERBOSE
-                        Enable verbose output. Note that this setting takes advantage of a per-process runtime setting in libsvm that, if enabled, may not      
-                        work properly in a multithreaded context. Default is False
+                       - Az output megjelenítsére szolgáló paraméter. Default = False
   -mi MAX_ITER, --max_iter MAX_ITER
-                        Hard limit on iterations within solver, or -1 for no limit. Default is -1
+  - Az SVR-re adott hard limit faktor. Default = -1
   -hr , --html_report 
-  
-  A HTML file mentése. Alapértelmezett érték: False
+  - A HTML file mentése. Default = False
