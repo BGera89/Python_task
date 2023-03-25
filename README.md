@@ -54,45 +54,70 @@ python main.py -fp dataset/winequality.csv -op output/ -r True -hr True
 
 ##A program argumentumai:
 optional arguments:
-  -h, --help            show this help message and exit
+  -h, --help
+  - Segítség kérése mely során a program listázza a lehetőségeket majd kilép
+  
   -fp FILEPATH, --filepath FILEPATH
-                        Type in the filepath of the .csv file with your dataset. Default is :'winequality.csv'
+ - A dataset elérési útvonala. Default = 'winequality.csv'
+                        
   -l LABEL, --label LABEL
-                        name of the column that contrains the label (the y, or the value we are predicting). Default is : quality
+  - A célváltozó oszlopneve. Default = quality
+                        
   -tf [TRAIN_FEATURES ...], --train_features [TRAIN_FEATURES ...]
-                        Features (columns of csv) for the model to make the predictions. Default uses all. Write your columns names afer each other. e.g. -mf   
-                        pH sulphates. If there the feature consists of multiple words write it in double quotes like this: "fixed acidity". If the number of    
-                        feature is one or two it will create visualizations for those (2D if only one feature is present, 3D if two features are present)       
+  - A változók definiálsa melyekkel a model majd tanulni fog. A megfelelő megadás a következő. Ha a két változó a pH és sulphazes akkor pl.:
+```
+python main.py -tf ph sulphates
+```
+  - Ha pedig a változó több tagból áll pl. a fixed acidity akkor azt ""-ba kell helyezni pl.
+```
+python main.py -tf ph sulphates "fixed acidity"
+```
+  - Default az összes változót használja
+                        
   -f {True,False}, --features {True,False}
-                        print out the features. Default is False
+                        A változókat nézhetjük meg a segítségével. Default = False
+                        
   -s SPLIT, --split SPLIT
-                        Thepercentage of the train-test split (the value you pass will give you the train percentage). Default is: 0.25
+  - A train-test split aránya. Default = 0.25
+                        
   -op OUTPUT_PATH, --output_path OUTPUT_PATH
-                        Specify the path of the output file. It will contain the evaluation metrics, and the predicted values with true values in a separate    
-                        file. Default is the currect dir
+  -A kimeneti fájlok mentési útvonala. Default = a jelenlegi mappa
+                        
   -r ROUND, --round ROUND
-                        Round the results (True or False). If True will automatically create a confusion matrix plot and calculate the accuracy of the model.   
-                        Default is
+  - Amennyiben igaz felkerekíti a regresszió kimenetét a pontosabb kiértékelés érdekében. Default = False
+                        
   -sk {linear,poly,rbf,sigmoid,precomputed}, --svm_kernel {linear,poly,rbf,sigmoid,precomputed}
-                        The typeof the kernel for the SVR model. Default is rbf
+  - Az SVR model kernel-je (szűrője). Default = rbf
+                        
   -de DEGREE, --degree DEGREE
-                        The degree of the polynomial if the kernel is 'poly' (ignored by other kernels). Default is 3.
+  - A polinomiális kernel rendje. Csak akkor releváns ha a kernel 'poly'. Default = 3.
+                       
   -ga {scale,auto}, --gamma {scale,auto}
-                        Kernel coefficient for 'rbf', 'poly' and 'sigmoid'
+  - A kernel koeficiens értéke a 'rbf', 'poly' és 'sigmoid' kernelekre
+                        
   -co COEF0, --coef0 COEF0
-                        Independent term in kernel function. It is only significant in 'poly' and 'sigmoid'. Default is 0.0
-  -to TOL, --tol TOL    Tolerance for stopping criterion. Default is 1e-3
-  -c C, --C C           Regularization parameter The strength of the regularization is inversely proportional to C. Must be strictly positive. The penalty is   
-                        a squared l2 penalty. Default is 1.0
+  - A kernel függvényének independens tényezője. poly és sigmoid kernel esetében relreváns. Default = 0.0
+                        
+  -to TOL, --tol TOL    
+  - megállási kritérium toleranciája. Default = 1e-3
+  
+  -c C, --C C           
+  - SVR regularizációs paramétere. Négyzetes l2 regularizáció. Default = 1.0
+                        
   -e EPSILON, --epsilon EPSILON
-                        - SVR model epszilon értéke. Nem negatív szám. Default = 0.1.
+  - SVR model epszilon értéke. Nem negatív szám. Default = 0.1.
+  
   -sh SHRINKING, --shrinking SHRINKING
-                        - csökkenő heurisztika alkalmazása. Default = True
+  - csökkenő heurisztika alkalmazása. Default = True
+  
   -cs CACHE_SIZE, --cache_size CACHE_SIZE
-                        - A kernel cache mérete mb-ban. Default = 200.0
+  - A kernel cache mérete mb-ban. Default = 200.0
+                        
   -v VERBOSE, --verbose VERBOSE
-                       - Az output megjelenítsére szolgáló paraméter. Default = False
+  - Az output megjelenítsére szolgáló paraméter. Default = False
+  
   -mi MAX_ITER, --max_iter MAX_ITER
   - Az SVR-re adott hard limit faktor. Default = -1
+  
   -hr , --html_report 
   - A HTML file mentése. Default = False
