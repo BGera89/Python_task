@@ -15,6 +15,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 # Library for the CLI
 import argparse
+import sys
 
 
 
@@ -23,11 +24,11 @@ import argparse
 parser = argparse.ArgumentParser(description="Regression model training")
 
 parser.add_argument('-fp', '--filepath', type=str,
-                    help='Type in the filepath of the .csv file with your dataset. Default is :\'winequality.csv\' ',
-                    default='winequality.csv')
+                    help='Type in the filepath of the .csv file with your dataset. Default is \'dataset_dir\winequality.csv\' ',
+                    default='dataset_dir/winequality.csv')
 
 parser.add_argument('-l', '--label', type=str,
-                    help='name of the column that contrains the label (the y, or the value we are predicting). Default is : quality',
+                    help='name of the column that contrains the label (the y, or the value we are predicting). Default is quality',
                     default='quality')
 
 parser.add_argument('-tf', '--train_features', type=str, nargs='*',
@@ -38,7 +39,7 @@ parser.add_argument('-f', '--features', type=bool,
                     default=False)
 
 parser.add_argument('-s', '--split', type=float,
-                    help='Thepercentage of the train-test split (the value you pass will give you the train percentage). Default is: 0.25',
+                    help='The percentage of the train-test split (the value you pass will give you the train percentage). Default is: 0.25',
                     default=0.25)
 
 parser.add_argument('-op', '--output_path', type=str,
@@ -46,7 +47,7 @@ parser.add_argument('-op', '--output_path', type=str,
                     default='')
 
 parser.add_argument('-r', '--round', type=bool,
-                    help='Round the results (True or False). If True will automatically create a confusion matrix plot and calculate the accuracy of the model. Default is',
+                    help='Round the results (True or False). If True will automatically create a confusion matrix plot and calculate the accuracy of the model. Default is False',
                     default=False)
 
 parser.add_argument('-sk', '--svm_kernel', type=str,
@@ -58,7 +59,7 @@ parser.add_argument('-de', '--degree', type=int,
                     default=3)
 
 parser.add_argument('-ga', '--gamma', type=str,
-                    help='Kernel coefficient for \'rbf\', \'poly\' and \'sigmoid\'',
+                    help='Kernel coefficient for \'rbf\', \'poly\' and \'sigmoid\'. Default is scale',
                     choices=['scale', 'auto'],
                     default='scale')
 
@@ -103,6 +104,7 @@ df = pd.read_csv(args.filepath)
 if args.features:  # print out the features of the dataset if the user asked for it
     print('The features are: ', df.columns.to_list())
     print('\n')
+    sys.exit()
 X = df.drop(columns=args.label)
 
 # If the user didn't specify the features it will automatically use every feature. If they specified it than it will use those
@@ -142,6 +144,7 @@ if args.train_features != None and len(args.train_features) == 1:
     plt.show()
     fig.savefig(args.output_path+"1_feature_regression.png")
 
+    # Creates a figure for the HTML report
     if args.html_report:
         fig_line=go.Figure(make_subplots(rows=1, cols=1))
         fig_line.add_trace(go.Scatter(x=X_test.values.ravel(),y=y_test.values.ravel(),  mode='markers', name="true"), row=1, col=1)
@@ -166,6 +169,7 @@ elif args.train_features != None and len(args.train_features) == 2:
     plt.show()
     fig.savefig(args.output_path+"2_feature_regression.png")
 
+    # Creates a figure for the HTML report
     if args.html_report:
         fig_3D=go.Figure(make_subplots(rows=1, cols=1, specs=[[{'type': 'scene'}]]))
         fig_3D.add_trace(go.Scatter3d(x=x.values.ravel(), y=y.values.ravel(), z=z.values.ravel(), mode='markers', name='True'), row=1, col=1)
@@ -276,10 +280,11 @@ else:
                         'evaluation_metrics.csv', index=False)
     eval_vales.to_csv(args.output_path + 'evaluation_values.csv', index=False)
 
-
+# Creates all the figures for the HTML report if the user specified True
 if args.html_report:
-        y_eq_0 = [0 for i in range(0, len(y_test))]
+        y_eq_0 = [0 for i in range(0, len(y_test))] # This creates all 0-s for the y=0 line for the residual plot
         with open(args.output_path +'Report.html', 'w+') as f:
+            # Initialize the Figure. Also specifying the types in the specs and the titles
             fig_base=go.Figure(make_subplots(rows=5, cols=1, specs=[[{"type": "table"}],
                                                                 [{"type":"table"}],
                                                                 [{"type": "scatter"}],
@@ -289,12 +294,13 @@ if args.html_report:
                                                                                                                             "Residual_plot",
                                                                                                                             "Predicted_values_x_real_values",
                                                                                                                             "Residual_Histogram")))
+            # Creating the first tabe for the evaluation metrics
             fig_base.add_trace(go.Table(header=dict(values=list(eval_metrics.columns)), cells=dict(values=[eval_metrics.Mean_Squared_Error,
                                                                                                         eval_metrics.Root_Mean_Squared_Error,
                                                                                                         eval_metrics.Mean_Absolute_Error,
                                                                                                         eval_metrics.SRV_coefficicient,
                                                                                                         eval_metrics.accuracy_rounded])), row=1, col=1)
-            
+            # Creating the tabe for the evaluation values
             fig_base.add_trace(go.Table(header=dict(values=list(eval_values.columns)), cells=dict(values=[eval_values.true_values,
                                                                                                         eval_values.rounded_predictions,
                                                                                                         eval_values.predicted_values])), row=2, col=1)
@@ -315,8 +321,10 @@ if args.html_report:
             fig_base.update_yaxes(title_text='residual count', row=5, col=1)
 
             fig_base.update_layout(showlegend=True, height=1500)
+            # Saving the base plots to a HTML file
             f.write(fig_base.to_html(full_html=False, include_plotlyjs='cdn'))
 
+            # Write the HTML files if they met the condition
             if args.round:
                 f.write(fig_heat.to_html(full_html=False, include_plotlyjs='cdn'))
 
