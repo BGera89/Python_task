@@ -1,0 +1,10 @@
+version: "3.9.13"
+services:
+  app:
+    build: .
+    image: python_cli
+    volumes:
+      - ./output_docker:/app/output
+      - ./dataset_dir:/app/dataset
+    stdin_open: true
+    tty: true
