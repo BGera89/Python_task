@@ -64,13 +64,13 @@ optional arguments:
   - A célváltozó oszlopneve. Default = quality
                         
   -tf [TRAIN_FEATURES ...], --train_features [TRAIN_FEATURES ...]
-  - A változók definiálsa melyekkel a model majd tanulni fog. A megfelelő megadás a következő. Ha a két változó a pH és sulphazes akkor pl.:
+  - A változók definiálsa melyekkel a model majd tanulni fog. A megfelelő megadás a következő. Ha a két változó a pH és sulphates akkor pl.:
 ```
-python main.py -tf ph sulphates
+python main.py -tf pH sulphates
 ```
   - Ha pedig a változó több tagból áll pl. a fixed acidity akkor azt ""-ba kell helyezni pl.
 ```
-python main.py -tf ph sulphates "fixed acidity"
+python main.py -tf pH sulphates "fixed acidity"
 ```
   - Default az összes változót használja
                         
