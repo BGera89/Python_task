@@ -81,7 +81,7 @@ python main.py -tf pH sulphates "fixed acidity"
   - A train-test split aránya. Default = 0.25
                         
   -op OUTPUT_PATH, --output_path OUTPUT_PATH
-  -A kimeneti fájlok mentési útvonala. Default = a jelenlegi mappa
+  - A kimeneti fájlok mentési útvonala. Default = a jelenlegi mappa
                         
   -r ROUND, --round ROUND
   - Amennyiben igaz felkerekíti a regresszió kimenetét a pontosabb kiértékelés érdekében. Default = False
