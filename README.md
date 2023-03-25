@@ -52,13 +52,13 @@ docker-compose run --rm app
 python main.py -fp dataset/winequality.csv -op output/ -r True -hr True
 ```
 
-##A program argumentumai:
+## A program argumentumai:
 optional arguments:
   -h, --help
   - Segítség kérése mely során a program listázza a lehetőségeket majd kilép
   
   -fp FILEPATH, --filepath FILEPATH
- - A dataset elérési útvonala. Default = 'winequality.csv'
+ - A dataset elérési útvonala. Default = 'dataset_dir/winequality.csv'
                         
   -l LABEL, --label LABEL
   - A célváltozó oszlopneve. Default = quality
@@ -75,7 +75,7 @@ python main.py -tf ph sulphates "fixed acidity"
   - Default az összes változót használja
                         
   -f {True,False}, --features {True,False}
-                        A változókat nézhetjük meg a segítségével. Default = False
+  - A program kiírja a változókat majd kilép. Default = False
                         
   -s SPLIT, --split SPLIT
   - A train-test split aránya. Default = 0.25
