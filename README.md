@@ -49,7 +49,53 @@ docker-compose run --rm app
 ```
 Így futtathatjuk is az applikációt pl. a következőképp:
 ```
-
+python main.py -fp dataset/winequality.csv -op output/ -r True -hr True
 ```
 
-
+##A program argumentumai:
+optional arguments:
+  -h, --help            show this help message and exit
+  -fp FILEPATH, --filepath FILEPATH
+                        Type in the filepath of the .csv file with your dataset. Default is :'winequality.csv'
+  -l LABEL, --label LABEL
+                        name of the column that contrains the label (the y, or the value we are predicting). Default is : quality
+  -tf [TRAIN_FEATURES ...], --train_features [TRAIN_FEATURES ...]
+                        Features (columns of csv) for the model to make the predictions. Default uses all. Write your columns names afer each other. e.g. -mf   
+                        pH sulphates. If there the feature consists of multiple words write it in double quotes like this: "fixed acidity". If the number of    
+                        feature is one or two it will create visualizations for those (2D if only one feature is present, 3D if two features are present)       
+  -f {True,False}, --features {True,False}
+                        print out the features. Default is False
+  -s SPLIT, --split SPLIT
+                        Thepercentage of the train-test split (the value you pass will give you the train percentage). Default is: 0.25
+  -op OUTPUT_PATH, --output_path OUTPUT_PATH
+                        Specify the path of the output file. It will contain the evaluation metrics, and the predicted values with true values in a separate    
+                        file. Default is the currect dir
+  -r ROUND, --round ROUND
+                        Round the results (True or False). If True will automatically create a confusion matrix plot and calculate the accuracy of the model.   
+                        Default is
+  -sk {linear,poly,rbf,sigmoid,precomputed}, --svm_kernel {linear,poly,rbf,sigmoid,precomputed}
+                        The typeof the kernel for the SVR model. Default is rbf
+  -de DEGREE, --degree DEGREE
+                        The degree of the polynomial if the kernel is 'poly' (ignored by other kernels). Default is 3.
+  -ga {scale,auto}, --gamma {scale,auto}
+                        Kernel coefficient for 'rbf', 'poly' and 'sigmoid'
+  -co COEF0, --coef0 COEF0
+                        Independent term in kernel function. It is only significant in 'poly' and 'sigmoid'. Default is 0.0
+  -to TOL, --tol TOL    Tolerance for stopping criterion. Default is 1e-3
+  -c C, --C C           Regularization parameter The strength of the regularization is inversely proportional to C. Must be strictly positive. The penalty is   
+                        a squared l2 penalty. Default is 1.0
+  -e EPSILON, --epsilon EPSILON
+                        Epsilon in the epsilon-SVR model. It specifies the epsilon-tube within which no penalty is associated in the training loss function     
+                        with points predicted within a distance epsilon from the actual value. Must be non-negative Default is 0.1.
+  -sh SHRINKING, --shrinking SHRINKING
+                        Whether to use the shrinking heuristic. See the User Guide. Default is True
+  -cs CACHE_SIZE, --cache_size CACHE_SIZE
+                        Specify the size of the kernel cache (in MB). Default is 200.0
+  -v VERBOSE, --verbose VERBOSE
+                        Enable verbose output. Note that this setting takes advantage of a per-process runtime setting in libsvm that, if enabled, may not      
+                        work properly in a multithreaded context. Default is False
+  -mi MAX_ITER, --max_iter MAX_ITER
+                        Hard limit on iterations within solver, or -1 for no limit. Default is -1
+  -hr , --html_report 
+  
+  A HTML file mentése. Alapértelmezett érték: False
