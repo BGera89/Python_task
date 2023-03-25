@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY ./src .
 
-RUN pip install matplotlib seaborn scikit-learn pandas numpy argparse plotly
+RUN pip install matplotlib seaborn scikit-learn pandas numpy argparse plotly sys
 
 CMD ["bash"]
