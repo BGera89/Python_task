@@ -145,7 +145,7 @@ if args.train_features != None and len(args.train_features) == 1:
     fig.savefig(args.output_path+"1_feature_regression.png")
 
     # Creates a figure for the HTML report
-    if args.html_report:
+    if args.html_report==True:
         fig_line=go.Figure(make_subplots(rows=1, cols=1))
         fig_line.add_trace(go.Scatter(x=X_test.values.ravel(),y=y_test.values.ravel(),  mode='markers', name="true"), row=1, col=1)
         fig_line.add_trace(go.Scatter(x=X_test.values.ravel(),y=predictions,  mode='markers', name="predicted"), row=1, col=1)
@@ -170,7 +170,7 @@ elif args.train_features != None and len(args.train_features) == 2:
     fig.savefig(args.output_path+"2_feature_regression.png")
 
     # Creates a figure for the HTML report
-    if args.html_report:
+    if args.html_report==True:
         fig_3D=go.Figure(make_subplots(rows=1, cols=1, specs=[[{'type': 'scene'}]]))
         fig_3D.add_trace(go.Scatter3d(x=x.values.ravel(), y=y.values.ravel(), z=z.values.ravel(), mode='markers', name='True'), row=1, col=1)
         fig_3D.add_trace(go.Scatter3d(x=x.values.ravel(), y=y.values.ravel(), z=predictions, mode='markers', name='Predicted'), row=1, col=1)
@@ -186,7 +186,7 @@ else:
 
 # Since this task is close to a classification task I added an option to round the output to make it more interpretable.
 # This will also crate a confusion matrix so we can also visualize those results.
-if args.round:
+if args.round==True:
     rounded_pred = predictions.round()
     acc = accuracy_score(y_test, rounded_pred)
 
@@ -208,6 +208,7 @@ if args.round:
     eval_metrics.to_csv(args.output_path +
                         'evaluation_metrics.csv', index=False)
     eval_values.to_csv(args.output_path + 'evaluation_values.csv', index=False)
+    
     # Here on top of the confusion matrix we create a
     # residuals plot, histogram of residuals, a plot where I plotted the predicted values against the y values.
     # It creates these to assess the regression models performance
@@ -234,8 +235,21 @@ if args.round:
     plt.show()
     fig.savefig(args.output_path+"evalauation_figure.png", dpi=300)
 
-    if args.html_report:
-        fig_heat=go.Figure(make_subplots(rows=1, cols=1, subplot_titles=("confusion_matrix_heatmap", )))
+    #Generating the heatmap and the rounded values for the tables
+    if args.html_report==True:
+        #Defining the values for the HTML report
+        eval_met_list=[eval_metrics.Mean_Squared_Error,
+                eval_metrics.Root_Mean_Squared_Error,
+                eval_metrics.Mean_Absolute_Error,
+                eval_metrics.SRV_coefficicient,
+                eval_metrics.accuracy_rounded]
+        
+        eval_val_list=[eval_values.true_values,
+                       eval_values.rounded_predictions,
+                       eval_values.predicted_values]
+        
+        fig_heat=go.Figure(make_subplots(rows=1, cols=1, specs=[[{"type":"heatmap"}]],
+                                                        subplot_titles=("confusion_matrix_heatmap",)))
         fig_heat.add_trace(go.Heatmap(z=confusion_matrix(y_test, rounded_pred), 
                                         text=confusion_matrix(y_test, rounded_pred),
                                                                 texttemplate="%{text}",
@@ -270,18 +284,26 @@ else:
     mae = mean_absolute_error(y_test, predictions)
     svr_score = model.score(X_test, y_test)
     eval_metrics = pd.DataFrame({'Mean_Squared_Error': mse,
-                                 'Root_mean_Squared_Error': mse**0.5,
-                                'Mean_Absolute_Error': mae,
+                                 'Root_Mean_Squared_Error': mse**0.5,
+                                 'Mean_Absolute_Error': mae,
                                  'SRV_coefficicient': svr_score}, index=[0])
-    eval_vales = pd.DataFrame({'true_values': y_test,
+    eval_values = pd.DataFrame({'true_values': y_test,
                               'predicted_values': predictions})
 
     eval_metrics.to_csv(args.output_path +
                         'evaluation_metrics.csv', index=False)
-    eval_vales.to_csv(args.output_path + 'evaluation_values.csv', index=False)
+    eval_values.to_csv(args.output_path + 'evaluation_values.csv', index=False)
+
+    eval_met_list=[eval_metrics.Mean_Squared_Error,
+                eval_metrics.Root_Mean_Squared_Error,
+                eval_metrics.Mean_Absolute_Error,
+                eval_metrics.SRV_coefficicient,]
+        
+    eval_val_list=[eval_values.true_values,
+                eval_values.predicted_values]
 
 # Creates all the figures for the HTML report if the user specified True
-if args.html_report:
+if args.html_report==True:
         y_eq_0 = [0 for i in range(0, len(y_test))] # This creates all 0-s for the y=0 line for the residual plot
         with open(args.output_path +'Report.html', 'w+') as f:
             # Initialize the Figure. Also specifying the types in the specs and the titles
@@ -295,15 +317,9 @@ if args.html_report:
                                                                                                                             "Predicted_values_x_real_values",
                                                                                                                             "Residual_Histogram")))
             # Creating the first tabe for the evaluation metrics
-            fig_base.add_trace(go.Table(header=dict(values=list(eval_metrics.columns)), cells=dict(values=[eval_metrics.Mean_Squared_Error,
-                                                                                                        eval_metrics.Root_Mean_Squared_Error,
-                                                                                                        eval_metrics.Mean_Absolute_Error,
-                                                                                                        eval_metrics.SRV_coefficicient,
-                                                                                                        eval_metrics.accuracy_rounded])), row=1, col=1)
+            fig_base.add_trace(go.Table(header=dict(values=list(eval_metrics.columns)), cells=dict(values=eval_met_list)), row=1, col=1)
             # Creating the tabe for the evaluation values
-            fig_base.add_trace(go.Table(header=dict(values=list(eval_values.columns)), cells=dict(values=[eval_values.true_values,
-                                                                                                        eval_values.rounded_predictions,
-                                                                                                        eval_values.predicted_values])), row=2, col=1)
+            fig_base.add_trace(go.Table(header=dict(values=list(eval_values.columns)), cells=dict(values=eval_val_list)), row=2, col=1)
             
 
             fig_base.add_trace(go.Scatter(x=y_test, y=residuals, mode='markers', name='residuals'), row=3,col=1)
@@ -325,7 +341,7 @@ if args.html_report:
             f.write(fig_base.to_html(full_html=False, include_plotlyjs='cdn'))
 
             # Write the HTML files if they met the condition
-            if args.round:
+            if args.round==True:
                 f.write(fig_heat.to_html(full_html=False, include_plotlyjs='cdn'))
 
             if args.train_features != None and len(args.train_features) == 1:
